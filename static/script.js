@@ -4916,12 +4916,25 @@ async function handleFeedbackSubmission(event) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(feedbackData),
-            timeout: 10000
+            timeout: 60000 // Extended timeout for NLP analysis (first run can be slow)
         });
         
         if (response.ok) {
             const result = await response.json();
-            showFeedbackSuccess();
+            
+            // Log NLP analysis results if available
+            if (result.nlp_insights && result.nlp_insights.processed) {
+                logDebug(`NLP analysis completed - Sentiment: ${result.nlp_insights.sentiment}`);
+                
+                // Optional: Show user-friendly message about analysis
+                if (result.nlp_insights.sentiment === 'negative') {
+                    logDebug('Negative feedback detected - flagged for review');
+                }
+            } else if (result.nlp_insights && !result.nlp_insights.processed) {
+                logDebug('NLP analysis will be processed asynchronously');
+            }
+            
+            showFeedbackSuccess(result);
             logDebug('Feedback submitted successfully');
         } else {
             // Handle backend validation errors
@@ -4939,12 +4952,21 @@ async function handleFeedbackSubmission(event) {
             submitButton.disabled = false;
         }
         
-        // Show specific error message from backend or generic message
-        showNotification(error.message || 'Failed to submit feedback. Please try again.', 'error');
+        // Handle timeout specifically
+        if (error.name === 'AbortError') {
+            logDebug('Feedback submission timed out - likely NLP processing delay');
+            // Optimistically show success for timeouts, as backend likely continues processing
+            // or show a specific message:
+            showNotification('Submission took too long but may have been received.', 'info');
+            // Ideally we could fallback to success UI if we're confident it's just slow
+        } else {
+            // Show specific error message from backend or generic message
+            showNotification(error.message || 'Failed to submit feedback. Please try again.', 'error');
+        }
     }
 }
 
-function showFeedbackSuccess() {
+function showFeedbackSuccess(result = null) {
     const form = document.getElementById('feedback-form');
     const successDiv = document.getElementById('feedback-success');
     
@@ -4952,6 +4974,14 @@ function showFeedbackSuccess() {
         form.classList.add('submitted');
         successDiv.classList.remove('hidden');
         successDiv.classList.add('show');
+        
+        // Update success message if NLP insights are available
+        if (result && result.nlp_insights && result.nlp_insights.processed) {
+            const successMessage = successDiv.querySelector('p');
+            if (successMessage) {
+                successMessage.textContent = 'Your feedback has been analyzed and will help us improve the platform.';
+            }
+        }
         
         // Auto-hide feedback section after success
         setTimeout(() => {

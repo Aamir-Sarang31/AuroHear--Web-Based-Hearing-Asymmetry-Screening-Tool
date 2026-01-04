@@ -113,6 +113,32 @@ def migrate_database():
                 else:
                     print('✓ test_feedback table already has required suggestions_text')
             
+            # Create test_nlp_insights table if missing (new NLP analysis system)
+            if 'test_nlp_insights' not in existing_tables:
+                print('Creating test_nlp_insights table...')
+                with db.engine.connect() as conn:
+                    conn.execute(db.text('''
+                        CREATE TABLE test_nlp_insights (
+                            id VARCHAR(36) PRIMARY KEY,
+                            test_id VARCHAR(36) NOT NULL,
+                            sentiment TEXT NOT NULL,
+                            emotions JSON DEFAULT '{}',
+                            uncertainty FLOAT DEFAULT 0.0,
+                            issues JSON DEFAULT '[]',
+                            intent TEXT,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+                        )
+                    '''))
+                    
+                    # Create indexes for efficient queries
+                    conn.execute(db.text('CREATE INDEX idx_test_nlp_insights_test_id ON test_nlp_insights(test_id)'))
+                    conn.execute(db.text('CREATE INDEX idx_test_nlp_insights_sentiment ON test_nlp_insights(sentiment)'))
+                    conn.execute(db.text('CREATE INDEX idx_test_nlp_insights_created_at ON test_nlp_insights(created_at)'))
+                    conn.commit()
+                print('✓ test_nlp_insights table created with indexes')
+            else:
+                print('✓ test_nlp_insights table already exists')
+            
             # Drop old tables if they exist (migration from old structure)
             if 'screening_session' in existing_tables:
                 print('Found old screening_session table - consider migrating data before dropping')

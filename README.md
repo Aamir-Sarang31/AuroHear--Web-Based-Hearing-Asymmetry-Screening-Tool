@@ -17,7 +17,28 @@ AuroHear provides preliminary audiometric testing at standard frequencies (250-5
 - **User Management**: Supabase authentication with privacy-focused guest mode
 - **Interactive Reports**: Professional PDF/PNG exports with audiogram visualizations
 - **Response Analytics**: Reliability scoring and interaural difference analysis
+- **NLP Reliability Module**: Automated feedback analysis for platform improvement
 - **Modern Interface**: Responsive design with accessibility compliance
+
+## Interface Preview
+
+![Test in Progress](Screenshots/aurohear%20test%20in%20progress.png)
+*Active hearing test with real-time response tracking*
+
+![Test Results](Screenshots/aurohear%20demo%20test%20results.png)
+*Detailed audiometric results with frequency visualization*
+
+![Feedback Analysis](Screenshots/aurohear%20demo%20analysis.png)
+*NLP-powered feedback analysis and reliability scoring*
+
+![User History](Screenshots/AuroHear%20Testhistory.png)
+*Comprehensive testing history and trend tracking*
+
+![Profile Management](Screenshots/AuroHear%20User%20Profile.png)
+*User profile settings and preference management*
+
+![Feedback Form](Screenshots/aurohear%20feedback%20form.png)
+*Integrated feedback collection for continuous improvement*
 
 ## Quick Start
 
@@ -31,7 +52,7 @@ AuroHear provides preliminary audiometric testing at standard frequencies (250-5
 ```bash
 # Clone and setup
 git clone <repository-url>
-cd audiometry-test
+cd aurohear
 python -m venv venv
 
 # Activate environment
@@ -47,121 +68,81 @@ cp .env.example .env
 # Edit .env with your Supabase credentials
 
 # Initialize database
-python migrate_db.py
+python backend/migrate_db.py
 
 # Run application
 python app.py
 ```
 
-Visit `http://127.0.0.1:5000` to access the application.
+### Environment Configuration
 
-## Configuration
-
-### Environment Variables
+Create `.env` file with:
 ```env
-DATABASE_URL="postgresql://user:pass@host:port/db"  # Optional, SQLite fallback
-SUPABASE_URL="https://your-project.supabase.co"    # Required
-SUPABASE_KEY="your-anon-key"                       # Required
+DATABASE_URL=your_supabase_database_url
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_KEY=your_supabase_anon_key
+FLASK_ENV=development
 ```
 
-### Database Schema
-- **`user`**: User profiles and aggregated test results
-- **`screening_sessions`**: Detailed frequency-specific test data
-- **`test_feedback`**: User feedback for platform improvement
+## Project Structure
 
-## Deployment
+```
+aurohear/
+├── app.py                     # Main Flask application
+├── requirements.txt           # Python dependencies
+├── package.json              # Node.js dependencies
+│
+├── backend/                   # Backend Python modules
+│   ├── config.py             # Configuration management
+│   ├── database.py           # Database initialization
+│   ├── models/               # Database models
+│   ├── routes/               # Flask route blueprints
+│   ├── utils/                # Utility functions
+│   └── nlp_engine/           # NLP processing module
+│
+├── static/                   # Frontend assets
+│   ├── styles.css           # Application styles
+│   └── script.js            # Application JavaScript
+│
+├── templates/               # HTML templates
+│   └── index.html          # Main application template
+│
+├── tests/                  # Test suite
+├── docs/                   # Documentation
+└── .github/               # GitHub workflows
+```
 
-### Docker
+For detailed structure documentation, see [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md).
+
+## Testing
+
 ```bash
-docker build -t aurohear .
-docker run -p 10000:10000 --env-file .env aurohear
+# Run all tests
+python -m pytest tests/
+
+# Run specific test suites
+python tests/test_nlp_integration.py
+python tests/test_feedback_nlp_integration.py
+
+# Test NLP pipeline
+python backend/nlp_engine/store_results.py
 ```
 
-### Platform Deployment
-- **Render**: Connect repository, set environment variables, use `gunicorn app:app --bind 0.0.0.0:$PORT`
-- **Heroku**: Standard Python deployment with Procfile
-- **Manual**: `gunicorn app:app --bind 0.0.0.0:10000 --workers 4`
+## Documentation
 
-**Production Requirements**: SSL certificate, PostgreSQL database, environment variables configured
+### Core Platform
+- **[PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)** - Complete architecture guide
+- **[DEPLOYMENT.md](docs/DEPLOYMENT.md)** - Production deployment guide
+- **[SUPABASE_NLP_SETUP.md](docs/SUPABASE_NLP_SETUP.md)** - Database setup for NLP features
 
-## Architecture
-
-### Technology Stack
-- **Backend**: Flask + SQLAlchemy, NumPy/SciPy for audio processing
-- **Frontend**: Vanilla JavaScript ES6+, Chart.js for visualizations
-- **Database**: PostgreSQL (Supabase) with SQLite fallback
-- **Authentication**: Supabase Auth with guest mode support
-- **Audio**: Web Audio API with server-generated WAV files
-
-### Key API Endpoints
-- `/start_test` - Initialize hearing test
-- `/submit_response` - Process test responses  
-- `/next_test` - Get next test parameters
-- `/tone` - Generate audio tones
-- `/save_results` - Save aggregated results
-- `/submit_feedback` - Submit user feedback
-
-## Usage
-
-### Testing Workflow
-1. **Authentication**: Sign up/in for full features or use guest mode for privacy
-2. **Device Setup**: Headphone verification and volume calibration
-3. **Automated Testing**: 6 frequencies per ear with adaptive threshold detection
-4. **Results**: Interactive audiogram with reliability assessment and professional reports
-
-### Features
-- **Authenticated Users**: Test history, trend analysis, data export
-- **Guest Mode**: Complete privacy, no data storage
-- **Feedback System**: Required post-test ratings and suggestions for NLP analysis
-
-## Medical Disclaimers
-
-**This is a preliminary screening tool only - NOT a diagnostic instrument**
-
-- Results cannot diagnose hearing loss or medical conditions
-- Professional audiological interpretation required for all results
-- Environmental factors and equipment quality affect accuracy
-- Not validated for pediatric populations
-- Seek professional help for sudden hearing changes, tinnitus, or hearing concerns
-
-## Development
-
-### Project Structure
-```
-audiometry-test/
-├── app.py                          # Main Flask application
-├── migrate_db.py                   # Database migration utilities
-├── static/
-│   ├── styles.css                  # Main application styles
-│   ├── auth_styles.css            # Authentication-specific styles
-│   └── script.js                  # Frontend JavaScript application
-├── templates/
-│   └── index.html                 # Single-page application template
-├── instance/
-│   └── users.db                   # SQLite database (development)
-├── .github/workflows/
-│   └── keep-supabase-warm.yml     # CI/CD and maintenance
-├── test_*.py                      # Test files
-├── requirements.txt               # Python dependencies
-├── package.json                   # Node.js dependencies
-├── Dockerfile                     # Container configuration
-├── procfile                       # Heroku/Render deployment
-├── .env.example                   # Environment template
-├── DEPLOYMENT.md                  # Detailed deployment guide
-└── LICENSE                        # MIT License
-```
-
-### Development Commands
-```bash
-# Setup
-python -m venv venv && source venv/bin/activate
-pip install -r requirements.txt && npm install
-
-# Run
-python app.py              # Development server
-python migrate_db.py       # Database setup
-python -m pytest tests/   # Run tests
-```
+### NLP Reliability Module
+- **[NLP_RELIABILITY_MODULE.md](docs/NLP_RELIABILITY_MODULE.md)** - Complete module documentation
+  - System purpose and objectives
+  - Data flow architecture
+  - Database schema design
+  - Ethical constraints and safeguards
+  - Future expansion roadmap
+- **[NLP_ARCHITECTURE_DIAGRAM.md](docs/NLP_ARCHITECTURE_DIAGRAM.md)** - Visual system architecture
 
 ## Technical Specifications
 
@@ -171,18 +152,104 @@ python -m pytest tests/   # Run tests
 - **Algorithm**: Modified Hughson-Westlake with catch trials
 - **Reliability**: Response consistency scoring with catch trial validation
 
+### NLP Reliability Module
+- **Purpose**: Automated feedback analysis for platform improvement
+- **Models**: DistilBERT (sentiment), RoBERTa (emotions), custom rules (issues)
+- **Processing**: Real-time analysis with Supabase storage
+- **Ethics**: Complete separation from audiometric results - no clinical influence
+- **Privacy**: Anonymous analysis, aggregated insights only
+
 ### Performance
 - **Test Duration**: 8-12 minutes complete assessment
 - **Browser Support**: Chrome 80+, Firefox 75+, Safari 13+, Edge 80+
 - **Accuracy**: ±5 dB compared to clinical audiometry in controlled settings
 
+## Deployment
+
+### Development
+```bash
+python app.py              # Development server
+python backend/migrate_db.py  # Database setup
+```
+
+### Production
+```bash
+# Docker deployment
+docker build -t aurohear .
+docker run -p 10000:10000 aurohear
+
+# Or direct deployment
+gunicorn app:app --bind 0.0.0.0:10000
+```
+
+Required environment variables:
+- `DATABASE_URL`
+- `SUPABASE_URL` 
+- `SUPABASE_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` (Required for NLP Insight storage)
+
+## Future Enhancements & Research Roadmap
+
+While the current version of AuroHear delivers a complete and functional hearing screening platform with integrated NLP-based reliability analysis, the system has been intentionally designed with a clear path for future growth. The following enhancements outline the planned evolution of the project as additional data and user interactions are collected.
+
+### 1. Dataset Expansion & Longitudinal Analysis
+
+As AuroHear continues to be used, the accumulation of feedback and behavioral data will enable deeper statistical analysis of:
+
+- Session reliability trends
+- Recurring user-reported issues
+- Long-term changes in system performance and user experience
+
+This growing dataset will support more robust validation of the NLP reliability framework.
+
+### 2. System Health & Reliability Dashboard
+
+A future administrative interface will visualize insights derived from `test_nlp_insights`, including:
+
+- Overall system reliability scores
+- Sentiment distribution across sessions
+- Frequency of detected issues (e.g., noise, audibility, delay)
+- Recent low-confidence test sessions
+
+This dashboard will allow developers and researchers to proactively identify potential system weaknesses and user-experience bottlenecks.
+
+### 3. Intelligent User Experience Feedback Loop
+
+Using real-time NLP insights, AuroHear will introduce adaptive user interactions such as:
+
+- Immediate support prompts after negative feedback
+- Contextual guidance for low-confidence sessions
+- Personalized recommendations for improved testing conditions
+
+These mechanisms will enhance usability while maintaining strict separation from clinical decision logic.
+
+### 4. Advanced Reliability Modeling
+
+With sufficient data volume, future versions will refine the reliability scoring framework through:
+
+- Improved weighting of behavioral and linguistic indicators
+- Supervised learning from clinician-validated sessions
+- Cross-analysis between environmental factors and user experience
+
+This will further strengthen the interpretability and trustworthiness of screening outcomes.
+
+### 5. Research & Open Dataset Contribution
+
+An anonymized reliability dataset derived from aggregated NLP and behavioral insights may be released for research purposes, enabling external validation, benchmarking, and continued innovation in human-centered screening systems.
+
 ## Contributing
 
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/name`)
-3. Follow PEP 8 (Python) and ESLint (JavaScript) standards
+3. Follow project structure guidelines in [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)
 4. Add tests and update documentation
 5. Submit pull request
+
+### Development Guidelines
+- Follow PEP 8 (Python) and ESLint (JavaScript) standards
+- Maintain clear separation between backend and frontend
+- Use proper imports from backend modules
+- Add comprehensive tests for new features
 
 ## License
 

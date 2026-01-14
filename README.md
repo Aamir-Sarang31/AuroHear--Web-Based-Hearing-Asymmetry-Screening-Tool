@@ -10,6 +10,12 @@ AuroHear provides preliminary audiometric testing at standard frequencies (250-5
 
 > **Medical Disclaimer**: This is a screening tool only - not a diagnostic instrument. All results require professional audiological interpretation.
 
+## Live Demo
+
+>  **Experience the platform:**  
+> **[https://aurohear-website.onrender.com](https://aurohear-website.onrender.com)**
+
+
 ## Features
 
 - **Adaptive Audiometry**: Hughson-Westlake algorithms with catch trials for reliability assessment

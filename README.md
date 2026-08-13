@@ -1,3 +1,10 @@
+# AuroHear — Web-Based Hearing Asymmetry Screening Tool
+
+> **Project Context:** Preliminary Hearing Asymmetry Screening Platform using Adaptive Audiometry[cite: 1]  
+> **Original Team Repository:** [nishnarudkar/AuroHear--Web-Based-Hearing-Asymmetry-Screening-Tool](https://github.com/nishnarudkar/AuroHear--Web-Based-Hearing-Asymmetry-Screening-Tool)
+
+---
+
 # AuroHear
 
 **Professional web-based hearing asymmetry screening platform**

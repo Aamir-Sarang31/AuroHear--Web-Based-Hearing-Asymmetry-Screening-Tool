@@ -252,10 +252,10 @@ An anonymized reliability dataset derived from aggregated NLP and behavioral ins
 
 ## Contributors
 
-Aamir Sarang
-Nishant Narudkar
-Maitreya Pawar
-Vatsal Parmar
+- Aamir Sarang
+- Nishant Narudkar
+- Maitreya Pawar
+- Vatsal Parmar
 
 ## Contributing
 

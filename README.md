@@ -250,6 +250,12 @@ This will further strengthen the interpretability and trustworthiness of screeni
 
 An anonymized reliability dataset derived from aggregated NLP and behavioral insights may be released for research purposes, enabling external validation, benchmarking, and continued innovation in human-centered screening systems.
 
+## Contributors
+Aamir Sarang
+Nishant Narudkar
+Maitreya Pawar
+Vatsal Parmar
+
 ## Contributing
 
 1. Fork the repository
